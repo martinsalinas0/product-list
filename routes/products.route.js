@@ -12,7 +12,7 @@ router.get('/products', async (req, res) => {
     .limit(perPage)
 
 
-    const count = await Product.countDocuments(); ///number on the page
+    const count = await Product.countDocuments(); //number on the page
 
     res.status(200).json({products: products })
 
