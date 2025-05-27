@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const faker = require("faker");
-const Product = require("../models/product");
+const Product = require("../backend/models/product");
 
 router.get("/generate-fake-data", async (req, res, next) => {
   try {
