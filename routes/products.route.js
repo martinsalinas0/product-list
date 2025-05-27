@@ -1,20 +1,48 @@
 const router = require("express").Router();
 const Product = require("../models/product");
+const Review = require("../models/review.model.js");
 
 //GET all products
 //returns all products
 router.get("/products", async (req, res) => {
   try {
-    const perPage = 9; //products per page
-    const page = req.query.page || 1; //page requested, and set DEFAULT to page 1
+    const productsPerPage = 9;
+    const page = req.query.page || 1;
+    const category = req.query.category || null;
+    const priceSort = req.query.price;
+    const searchQuery = req.query.query || null;
 
-    const products = await Product.find()
-      .skip((page - 1) * perPage)
-      .limit(perPage);
+    let filterProducts = {};
 
-    const count = await Product.countDocuments(); //number on the page
+    if (category) {
+      filterProducts.category = category.toLowerCase();
+    }
 
-    res.status(200).json({ products: products });
+    if (searchQuery) {
+      filterProducts.name = { $regex: searchQuery, $options: "i" };
+    }
+
+    let sort = {};
+
+    if (priceSort === "lowest") {
+      sort.price = 1;
+    } else if (priceSort === "highest") {
+      sort.price = -1;
+    }
+
+    const count = await Product.countDocuments(filterProducts);
+
+    const products = await Product.find(filterProducts)
+      .sort(sort)
+      .skip((page - 1) * productsPerPage)
+      .limit(productsPerPage);
+
+    res.status(200).json({
+      products,
+      count,
+      page,
+      page: Math.ceil(count / productsPerPage),
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -41,7 +69,7 @@ router.get("/product/:id", async (req, res) => {
 router.delete("/product/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const product = Product.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -66,20 +94,22 @@ router.post("/product", async (req, res) => {
 //GETs the all reviews for a certain product (4 at a time)
 router.get("/product/:productId/reviews", async (req, res) => {
   try {
-    const { id } = req.params;
+    const { productId } = req.params;
 
-    const product = await Product.findById(id);
+    const product = await Product.findById(productId);
 
     //if no product
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    const reviews = await Review.find({ product: productId }).limit(4);
+
     //if yes prodcut but no reviews
-    if (product.reviews.length === 0) {
+    if (reviews.length === 0) {
       return res.status(404).json({ message: "No reviews available" });
     }
-    res.status(200).json(product.reviews);
+    res.status(200).json(reviews);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,12 +118,11 @@ router.get("/product/:productId/reviews", async (req, res) => {
 router.post("/product/:productId/reviews", async (req, res) => {
   try {
     const { productId } = req.params;
+    const { userName, text } = req.body;
 
-    const { User, Stars, reviewText } = req.body;
-
-    if (!User || !Stars || !reviewText) {
+    if (!userName || !text) {
       return res.status(400).json({
-        message: "username, starts, and review description are required.",
+        message: "username and text are required.",
       });
     }
 
@@ -103,15 +132,11 @@ router.post("/product/:productId/reviews", async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const newReview = {
-      User,
-      Stars,
-      reviewText,
-      datePosted: new Date(),
-    };
-
-    product.reviews.push(newReview);
-    await product.save();
+    const newReview = await Review.create({
+      userName,
+      text,
+      product: productId,
+    });
 
     res.status(201).json({ message: "Review added", review: newReview });
   } catch (error) {
@@ -125,16 +150,11 @@ router.delete("/reviews/:reviewId", async (req, res) => {
   try {
     const { reviewId } = req.params;
 
-    const product = await Product.findOne({ "reviews._id": reviewId });
-    if (!product) {
+    const review = await Review.findByIdAndDelete(reviewId);
+
+    if (!review) {
       return res.status(404).json({ message: "Review not found" });
     }
-
-    product.reviews = product.reviews.filter(
-      (review) => review._id.toString() !== reviewId
-    );
-
-    await product.save();
 
     res.status(200).json({ message: "review has been deleted" });
   } catch (error) {

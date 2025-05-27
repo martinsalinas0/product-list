@@ -11,11 +11,12 @@ app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 8000;
 
 //ROUTES
-const mainRoutes = require("../routes/main.js")
-const productRoutes = require('../routes/products.route.js')
-//app.use(mainRoutes); 
-app.use('/api', productRoutes)
+const mainRoutes = require("../routes/main.js");
+const productRoutes = require("../routes/products.route.js");
+//app.use(mainRoutes);
+app.use(productRoutes);
 
+//must connect to db first
 mongoose
   .connect("mongodb://localhost/products")
   .then(() => {
