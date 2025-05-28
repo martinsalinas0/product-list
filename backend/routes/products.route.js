@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const Product = require("../backend/models/product.js");
-const Review = require("../backend/models/review.model.js");
+const Product = require("../models/product.js");
+const Review = require("../models/review.model.js");
 
 //GET all products
 //returns all products
