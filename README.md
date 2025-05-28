@@ -1,14 +1,14 @@
-## Product List
+# Product List
 
 This project has been created by a student at Parsity, an online software engineering course. The work in this repository is wholly of the student based on a sample starter project that can be accessed by looking at the repository that this project forks.
 
 If you have any questions about this project or the program in general, visit [parsity.io](https://parsity.io/) or email hello@parsity.io.
 
-# Install dependencies
+Install dependencies
 
 npm install
 
-# Install required packages
+Install required packages
 
 npm install react-bootstrap bootstrap axios react-icons
 
@@ -16,22 +16,23 @@ Create a .env file in your backend directory:
 envPORT=8000
 MONGO_URI=mongodb://localhost/products
 
-# OR use your own MongoDB connection string:
+OR use your own MongoDB connection string:
 
-# MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/products
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/products
 
 Running the Application
 Start the Backend Server
 bash# From root directory
+
 npm run dev
 
-# Server will run on http://localhost:8000
+Server will run on http://localhost:8000
 
 Start the Frontend Application
 bash# From frontend directory
 npm run dev
 
-# App will run on http://localhost:3000
+App will run on http://localhost:3000
 
 Configuration
 Port Configuration
