@@ -1,6 +1,6 @@
 
 const Product = require("../models/product.js");
-const Reviews = require('../models/review.model.js')
+const Review = require('../models/review.model.js')
 
 
 //gets all products
