@@ -12,7 +12,7 @@ const ReviewSchema = new Schema(
       type: String,
       required: [true, "Review text is required"],
       trim: true,
-      maxlength: [1000, "Review cannot exceed 1000 characters"],
+      maxlength: [500, "Review cannot exceed 500 characters"],
     },
     product: {
       type: mongoose.Schema.Types.ObjectId,
