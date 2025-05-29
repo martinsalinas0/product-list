@@ -16,6 +16,6 @@ router.delete("/product/:id", deleteProductById);
 router.post("/product", createNewProduct);
 router.get("/product/:productId/reviews", getReviewsOfAProduct);
 router.post("/product/:productId/reviews", createReviewForAProduct);
-router.delete("/reviews/:reviewId", deleteReviewById);
+router.delete("/products/:productId/reviews/:reviewId", deleteReviewById);
 
 module.exports = router;
