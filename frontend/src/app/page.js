@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import ProductsNavBar from "./components/ProductsNavBar";
+import ProductsNavBar from "../components/ProductsNavBar";
 
 export default function Home() {
   return (
