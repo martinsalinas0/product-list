@@ -1,5 +1,5 @@
 
-const Product = require("../models/product.js");
+const Product = require("../models/product.model.js");
 const Review = require('../models/review.model.js')
 
 
@@ -41,7 +41,7 @@ const getProducts = async (req, res) => {
       products,
       count,
       page,
-      page: Math.ceil(count / productsPerPage),
+      totalPage: Math.ceil(count / productsPerPage),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
