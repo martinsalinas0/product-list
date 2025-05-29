@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Button,
   Col,
@@ -11,7 +12,36 @@ import {
 } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 
+
 export default function ProductsNavBar() {
+
+  const [products, setProducts] = useState('')
+  const [searchQuery, setSearchQuery ] = useState(''); 
+  const [filteredProducts, setFilteredProducts ] = useState(products)
+
+
+  const handleSearchBar = () => { 
+
+    const query = searchQuery.trim(); 
+    
+  
+
+    if(!searchQuery){ 
+      alert('Search cannot be empty'); 
+    return; 
+   } 
+
+   const filtered = products.filtere(product => 
+    product.name.toLowerCase().includes(query.toLowerCase())
+   ); 
+   
+   setFilteredProducts(filtered)
+   setSearchQuery('')
+   
+
+    }
+  
+
   return (
     <Navbar
       className="bg-body-tertiary justify-content-between"
@@ -19,7 +49,11 @@ export default function ProductsNavBar() {
     >
       <Form className="m-2">
         <InputGroup>
-          <InputGroupText id="search-query">Search for Products</InputGroupText>
+          <InputGroupText 
+          id="search-query"
+          value={searchQuery}
+          
+          >Search for Products</InputGroupText>
           <Form.Control placeholder="Search" style={{ minWidth: "500px" }} />
         </InputGroup>
       </Form>

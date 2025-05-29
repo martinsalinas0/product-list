@@ -11,6 +11,8 @@ import "bootstrap/dist/css/bootstrap.css";
 export default function Page() {
   const [data, setData] = useState(null);
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts ] = useState([])
+  const []
   const [pageNumber, setPageNumber] = useState(1);
   const [numOfProducts, setNumOfProducts] = useState(0);
   const [fetchError, setFetchError] = useState("");
