@@ -1,11 +1,11 @@
+"use client";
 const { configureStore } = require("@reduxjs/toolkit");
-const { fetchProducts } = require("./slices/productSlice");
+import productsReducer from "./slices/productSlice.js";
 
+const store = configureStore({
+  reducer: {
+    products: productsReducer,
+  },
+});
 
-const store = configureStore({ 
-  reducer: { 
-    products: productsReducer
-  }
-})
-
-export default store; 
+export default store;
