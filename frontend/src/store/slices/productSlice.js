@@ -36,10 +36,10 @@ export const deleteProductRequest = createAsyncThunk(
 export const updateProductRequest = createAsyncThunk( 
   'products/updateProductRequest', 
 
-)
+) 
 
 
-  const productsSlice = createSlice({ 
+  const productSlice = createSlice({ 
     name: 'products', 
     initialState: { 
       items: [], 
