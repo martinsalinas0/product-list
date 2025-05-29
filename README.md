@@ -4,6 +4,8 @@ This project has been created by a student at Parsity, an online software engine
 
 If you have any questions about this project or the program in general, visit [parsity.io](https://parsity.io/) or email hello@parsity.io.
 
+## Requirements
+
 Install dependencies
 
 npm install
@@ -11,6 +13,8 @@ npm install
 Install required packages
 
 npm install react-bootstrap bootstrap axios react-icons
+
+##Database - MongoDB
 
 Create a .env file in your backend directory:
 envPORT=8000
@@ -20,7 +24,8 @@ OR use your own MongoDB connection string:
 
 MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/products
 
-Running the Application
+## Running the Application
+
 Start the Backend Server
 bash# From root directory
 
@@ -34,13 +39,15 @@ npm run dev
 
 App will run on http://localhost:3000
 
-Configuration
+### Configuration
+
 Port Configuration
 
 Backend: Runs on process.env.PORT || 8000
 Frontend: Must run on port 3000 (CORS is configured for this port)
 
-Database Configuration
+### Database Configuration
+
 The MongoDB connection string is set to:
 javascriptconst connectString = process.env.MONGO_URI || "mongodb://localhost/products"
 You can either:
@@ -48,7 +55,8 @@ You can either:
 Use the default local MongoDB setup
 Set your own MONGO_URI in the .env file
 
-Troubleshooting
+## Troubleshooting
+
 Common Issues:
 CORS Error:
 
