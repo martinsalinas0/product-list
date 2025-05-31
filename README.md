@@ -71,3 +71,5 @@ Check MONGO_URI environment variable
 Port Already in Use:
 
 Change PORT in .env file
+
+to see products, go to http://localhost:8000/api/products
