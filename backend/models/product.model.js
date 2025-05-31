@@ -16,7 +16,7 @@ const ProductSchema = new Schema(
       required: [true, "Price is required"],
       min: [0],
     },
-    image: String,
+    imageUrl: String,
   },
   {
     timestamps: true,

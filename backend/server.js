@@ -2,7 +2,11 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db.js");
 dotenv.config();
+const swaggerUi = require("swagger-ui-express");
 const app = express();
+const YAML = require('yamljs')
+const swaggerDocument = YAML.load("backend/e-commerce-api.yaml")
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,6 +26,7 @@ const mainRoutes = require("./routes/main.route.js");
 const productRoutes = require("./routes/products.route.js");
 //app.use(mainRoutes);
 app.use("/api", productRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 console.log(process.env.MONGO_URI);
 

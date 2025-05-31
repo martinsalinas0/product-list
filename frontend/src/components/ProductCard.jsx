@@ -27,13 +27,19 @@ export default function ProductCard({ name, price, category, imageUrl }) {
   return (
     <Card style={{ width: "18rem" }}>
       <CardBody>
-        <CardTitle>{name}</CardTitle>
-        <CardSubtitle className="mb-3 text-muted">
-          Category: {capitalize(category)}
-        </CardSubtitle>
-        <CardSubtitle className="mb-3 text-muted">
-          Price: ${priceFixer(price)}
-        </CardSubtitle>
+        <Row className="g-2 justify-content-between d-flex" >
+          <Col>
+            {" "}
+            <h5 className="mb-3">
+              Category: <strong> {capitalize(category)}</strong>
+            </h5>
+          </Col>
+          <Col className="col-md-4">
+            <h5 className="mb-3 h-4">
+              <strong>${priceFixer(price)}</strong>
+            </h5>
+          </Col>
+        </Row>
 
         {/* Centered image */}
         <div className="d-flex justify-content-center mb-3">
@@ -42,9 +48,9 @@ export default function ProductCard({ name, price, category, imageUrl }) {
             style={{ width: "250px", height: "300px", objectFit: "cover" }}
           />
         </div>
+        <h1 className="card-title">{name}</h1>
 
-        <CardText className="text-center">This is the product text</CardText>
-        <Row className="g-2">
+        {/* <Row className="g-2">
           <Col>
             <Button
               className="w-100"
@@ -65,7 +71,7 @@ export default function ProductCard({ name, price, category, imageUrl }) {
               <BsFillTrash3Fill />
             </Button>
           </Col>
-        </Row>
+        </Row> */}
       </CardBody>
     </Card>
   );

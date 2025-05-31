@@ -1,0 +1,186 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: E-Commerce API
+  description: API for managing products and their reviews
+
+host: localhost:8000
+basePath: /api
+schemes:
+  - http
+paths:
+  /products:
+    get:
+      summary: Get all products
+      description: |
+        Returns all products with optional filters:
+        - `category` to filter by category
+        - `page` for pagination
+        - `price` to sort by price ('highest' or 'lowest')
+        - `query` to search by name or description (case-insensitive)
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          default: 1
+          description: Page number for pagination
+        - name: category
+          in: query
+          type: string
+          description: Filter products by category
+        - name: price
+          in: query
+          type: string
+          enum:
+            - highest
+            - lowest
+          description: Sort products by price
+        - name: query
+          in: query
+          type: string
+          description: Search string to match product name or description
+      responses:
+        200:
+          description: A list of products
+          schema:
+            type: object
+            properties:
+              page:
+                type: integer
+              totalPages:
+                type: integer
+              totalProducts:
+                type: integer
+              products:
+                type: array
+                items:
+                  $ref: "#/definitions/Product"
+    post:
+      summary: Create a new product
+      parameters:
+        - in: body
+          name: product
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        201:
+          description: Product created
+
+  /products/{product}:
+    get:
+      summary: Get a specific product by ID
+      parameters:
+        - name: product
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Product found
+          schema:
+            $ref: "#/definitions/Product"
+    delete:
+      summary: Delete a product by ID
+      parameters:
+        - name: product
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Product deleted
+
+  /products/{product}/reviews:
+    get:
+      summary: Get paginated reviews for a product
+      parameters:
+        - name: product
+          in: path
+          required: true
+          type: string
+        - name: page
+          in: query
+          type: integer
+          default: 1
+          description: Page number (4 reviews per page)
+      responses:
+        200:
+          description: A list of reviews
+          schema:
+            type: object
+            properties:
+              page:
+                type: integer
+              totalPages:
+                type: integer
+              reviews:
+                type: array
+                items:
+                  $ref: "#/definitions/Review"
+    post:
+      summary: Add a new review to a product
+      parameters:
+        - name: product
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: review
+          required: true
+          schema:
+            $ref: "#/definitions/Review"
+      responses:
+        201:
+          description: Review added
+
+  /reviews/{review}:
+    delete:
+      summary: Delete a review by ID
+      parameters:
+        - name: review
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Review deleted
+
+definitions:
+  Product:
+    type: object
+    required:
+      - name
+      - price
+      - category
+      - imageUrl
+    properties:
+      _id:
+        type: string
+      name:
+        type: string
+      imageUrl:
+        type: string
+      price:
+        type: number
+      category:
+        type: string
+      reviews:
+        type: array
+        items:
+          $ref: "#/definitions/Review"
+  Review:
+    type: object
+    required:
+      - author
+      - rating
+      - comment
+    properties:
+      _id:
+        type: string
+      author:
+        type: string
+      rating:
+        type: integer
+      comment:
+        type: string

@@ -7,7 +7,7 @@ const Review = require('../models/review.model.js')
 const getProducts = async (req, res) => {
   try {
     const productsPerPage = 9;
-    const page = req.query.page || 1;
+    const page = parseInt(req.query.page) || 1;
     const category = req.query.category || null;
     const priceSort = req.query.price;
     const searchQuery = req.query.query || null;
@@ -15,7 +15,7 @@ const getProducts = async (req, res) => {
     let filterProducts = {};
 
     if (category) {
-      filterProducts.category = category.toLowerCase();
+      filterProducts.category = { $regex: `^${category}$`, $options: "i" };
     }
 
     if (searchQuery) {
@@ -41,7 +41,7 @@ const getProducts = async (req, res) => {
       products,
       count,
       page,
-      totalPage: Math.ceil(count / productsPerPage),
+      totalPages: Math.ceil(count / productsPerPage),
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
