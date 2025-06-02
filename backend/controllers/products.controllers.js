@@ -10,7 +10,8 @@ const getProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const category = req.query.category || null;
     const priceSort = req.query.price;
-    const searchQuery = req.query.query || null;
+    const search = req.query.search || null; 
+    
 
     let filterProducts = {};
 
@@ -18,8 +19,8 @@ const getProducts = async (req, res) => {
       filterProducts.category = { $regex: `^${category}$`, $options: "i" };
     }
 
-    if (searchQuery) {
-      filterProducts.name = { $regex: searchQuery, $options: "i" };
+    if (search) {
+      filterProducts.name = { $regex: search, $options: "i" };
     }
 
     let sort = {};
