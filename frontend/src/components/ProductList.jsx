@@ -16,78 +16,69 @@ import {
 } from "react-bootstrap";
 import { Text } from "react-bootstrap/InputGroup";
 import { fetchProducts } from "../store/slices/productSlice.js";
+import { setPage } from "../store/slices/productSlice.js";
 
-export default function Page() {
+export default function ProductsList() {
   const dispatch = useDispatch();
-  const {
-    products,
-    count,
-    page: currentPage,
-    totalPages,
-    loading,
-    error,
-  } = useSelector((state) => state.products);
+  const { products, isLoading, error, count, categories, page, totalPages } = useSelector(
+    (state) => state.products
+  );
 
-  const [searchBarText, setSearchBarText] = useState("");
-  const [priceSort, setpriceSort] = useState(null);
-  const [categoryFilters, setCategoryFilters] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [page, setPage] = useState(1);
+  const [priceSort, setPriceSort] = useState(null);
+  const [catsForDropDown, setcatsForDropDown] = useState([])
 
   useEffect(() => {
-    const queryParams = new URLSearchParams();
-    queryParams.append("page", page);
-    if (selectedCategory) {
-      queryParams.append("category", selectedCategory);
-    }
-    if (priceSort) {
-      queryParams.append("price", priceSort);
-    }
-    if (searchBarText) {
-      queryParams.append("query", searchBarText);
-    }
+    dispatch(fetchProducts({ category: selectedCategory, priceSort, page }));
+  }, [selectedCategory, priceSort, page, dispatch]);
 
-    dispatch(fetchProducts(queryParams.toString()));
-  }, [dispatch, page, selectedCategory, priceSort, searchBarText]);
 
   useEffect(() => {
-    if (products.length > 0) {
-      const allCategories = [
-        ...new Set(products.map((product) => product.category)),
-      ];
-      setCategoryFilters(allCategories);
+    if (!searchQuery) {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredProducts(filtered);
     }
-  }, [products]);
+  }, [products, searchQuery]);
 
-  const handleSearchBarInput = (text) => {
-    setSearchBarText(text);
-    setPage(1);
+  const handlePriceSort = (sortOption) => {
+    setPriceSort(sortOption);
+    dispatch(setPage(1))
   };
 
   const handleCategorySelect = (category) => {
-    setSelectedCategory(category === selectedCategory ? null : category);
-    fetchProducts(queryParams);
-    setPage(1);
+    setSelectedCategory(category);
+    dispatch(setPage(1))
   };
 
-  const handleSortSelect = (order) => {
-    setpriceSort(order === priceSort ? null : order);
-    setPage(1);
+
+  const handleSearchBarInput = (text) => {
+    setSearchQuery(text);
+    dispatch(setPage(1));
   };
 
   const clearFilters = () => {
-    setSearchBarText("");
+    setSearchQuery("");
     setSelectedCategory(null);
-    setpriceSort(null);
-    setPage(1);
+    setPriceSort(null);
+    dispatch(setPage(1));
   };
 
   const prevPage = () => {
-    if (page > 1) setPage(page - 1);
+    if (page > 1) {
+      dispatch(setPage(page - 1))
+    }
   };
 
   const nextPage = () => {
-    if (page < totalPages) setPage(page + 1);
+    if (page < totalPages){
+       dispatch(setPage(page + 1))
+    }
   };
 
   return (
@@ -98,13 +89,11 @@ export default function Page() {
       >
         <Form className="m-2">
           <InputGroup>
-            <InputGroup.Text id="search-query">
-              Search for Products
-            </InputGroup.Text>
+
             <FormControl
-              placeholder="Search"
+              placeholder="Search Product"
               style={{ minWidth: "500px" }}
-              value={searchBarText}
+              value={searchQuery}
               onChange={(event) => handleSearchBarInput(event.target.value)}
             />
           </InputGroup>
@@ -114,10 +103,10 @@ export default function Page() {
           <Row>
             <Col xs="auto">
               <NavDropdown title={`Sort by Price`} id="dropdown-price">
-                <NavDropdown.Item onClick={() => handleSortSelect("highest")}>
+                <NavDropdown.Item onClick={() => handlePriceSort("highest")}>
                   Highest
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => handleSortSelect("lowest")}>
+                <NavDropdown.Item onClick={() => handlePriceSort("lowest")}>
                   Lowest
                 </NavDropdown.Item>
               </NavDropdown>
@@ -131,13 +120,13 @@ export default function Page() {
                 >
                   All
                 </NavDropdown.Item>
-                {categoryFilters.map((category, index) => (
+                {categories.map((cat, index) => (
                   <NavDropdown.Item
                     key={index}
-                    onClick={() => handleCategorySelect(category)}
-                    active={selectedCategory === category}
+                    onClick={() => handleCategorySelect(cat)}
+                    active={selectedCategory === cat}
                   >
-                    {category}
+                    {cat}
                   </NavDropdown.Item>
                 ))}
               </NavDropdown>
@@ -166,7 +155,7 @@ export default function Page() {
       </Navbar>
 
       <div className="row g-4 mt-4">
-        {loading ? (
+        {isLoading ? (
           <div className="col-12 text-center">
             <p className="text-muted">Loading all products...</p>
           </div>
@@ -179,7 +168,7 @@ export default function Page() {
             <p className="text-muted">No products found.</p>
           </div>
         ) : (
-          products.map((product, index) => (
+          filteredProducts.map((product, index) => (
             <div
               className="col-12 col-sm-6 col-md-4"
               key={product._id ?? index}
